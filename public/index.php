@@ -1,9 +1,12 @@
 <?php
+use Slim\Views\PhpRenderer;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
-require __DIR__ . '/../vendor/autoload.php';
+
+// require __DIR__ . '/../vendor/autoload.php';
+include "vendor/autoload.php";
 
 // Instantiate App
 $app = AppFactory::create();
@@ -21,6 +24,17 @@ $app->get('/hello/{name}', function (Request $request, Response $response, $args
     $name = $args['name'];
     $response->getBody()->write("Hello, $name");
     return $response;
+});
+
+
+$app->get('/hello/{name}', function ($request, $response, $args) {
+    $renderer = new PhpRenderer('path/to/templates');
+    return $renderer->render($response, "hello.php", $args);
+});
+
+$app->get('/about', function ($request, $response) {
+    $phpView = new PhpRenderer('../templates');
+    return $phpView->render($response, 'about.phtml');
 });
 
 $app->run();
